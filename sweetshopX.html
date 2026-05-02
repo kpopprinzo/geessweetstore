@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GeeSweetStore</title>
+<style>
+body{font-family:Arial;text-align:center;background:#fff5ee;}
+.box{margin:20px;padding:20px;background:white;border-radius:10px;}
+.products{display:flex;flex-wrap:wrap;justify-content:center;}
+.card{
+margin:15px;
+padding:15px;
+width:220px;
+background:white;
+border-radius:10px;
+box-shadow:0 4px 8px rgba(0,0,0,0.2);
+}
+button{
+padding:10px;
+background:brown;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+img{
+width:150px;
+height:150px;
+object-fit:contain;
+}
+</style>
+</head>
+<body>
+
+<h1>🍫 GeeSweetStore 🍭</h1>
+
+<div class="box">
+<h2>Builder Login</h2>
+<input type="password" id="password">
+<button onclick="login()">Login</button>
+</div>
+
+<div id="adminPanel" class="box" style="display:none;">
+<input type="text" id="name" placeholder="Product Name"><br><br>
+<input type="number" id="price" placeholder="Price"><br><br>
+<input type="file" id="image"><br><br>
+<button onclick="addProduct()">Post Product</button>
+</div>
+
+<div class="box">
+<h2>Shop</h2>
+<div id="products" class="products"></div>
+</div>
+
+<script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+function login(){
+if(document.getElementById("password").value==="builder123"){
+document.getElementById("adminPanel").style.display="block";
+}else{
+alert("Wrong password");
+}
+}
+
+function addProduct(){
+let name=document.getElementById("name").value;
+let price=document.getElementById("price").value;
+let file=document.getElementById("image").files[0];
+
+if(!file || !name || !price){
+alert("Fill everything");
+return;
+}
+
+let reader=new FileReader();
+reader.onload=function(e){
+products.push({
+name:name,
+price:price,
+image:e.target.result
+});
+
+localStorage.setItem("products",JSON.stringify(products));
+showProducts();
+}
+reader.readAsDataURL(file);
+}
+
+function buyProduct(name){
+alert(
+"You chose " + name +
+"\n\nTo buy contact GeeSweetStore:\n\n📧 pnkem31@gmail.com\n📞 078 126 5678\n\nWe will make a delivery plan with you."
+);
+}
+
+function showProducts(){
+let html="";
+products.forEach(p=>{
+html+=`
+<div class="card">
+<img src="${p.image}">
+<h3>${p.name}</h3>
+<p>R${p.price}</p>
+<button onclick="buyProduct('${p.name}')">Buy</button>
+</div>
+`;
+});
+document.getElementById("products").innerHTML=html;
+}
+
+showProducts();
+</script>
+
+</body>
+</html>
